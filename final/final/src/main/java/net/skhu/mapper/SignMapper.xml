@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.skhu.mapper.SignMapper">
+
+  <insert id="register" parameterType="net.skhu.dto.SignUser">
+  	insert into user (id,pw,department,name,gender,grade,phone,email)
+  	values ( #{id}, #{pw}, #{deparment},#{name},#{gender},#{grade},#{phone},#{email}) 
+  </insert>
+  
+  <select id="login" parameterType="java.util.HashMap" resultType="net.skhu.VO.User">
+  	select * from user where id = #{loginId} and pw = #{loginPw}
+  </select>
+  
+ 
+  <update id="update" parameterType="net.skhu.VO.User">
+  	UPDATE user SET 
+  	pw= #{pw},
+    department= #{department},
+    grade= #{grade},
+    phone= #{phone},
+    email= #{email}
+    WHERE id = #{id}
+  </update>
+  
+  <insert id="insert">
+  INSERT user (id, pw, name, department,gender,grade,phone,email)
+  VALUES (#{id},#{pw}, #{name}, #{department}, #{gender}, #{grade}, #{phone}, #{email})
+</insert>
+
+  	
+  
+</mapper>

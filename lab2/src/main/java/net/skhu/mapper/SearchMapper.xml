@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.skhu.mapper.SearchMapper">
+
+	<select id="findAll" resultType="net.skhu.VO.Student">
+		<bind name="start" value="(now - 1) * size" />
+		SELECT s.*,d.dname,d.dcode
+		FROM student s left join department d on s.departmentId=d.id
+		WHERE s.id>0
+		
+		<if test="category == 1">AND INSTR(s.studentId, #{searchWord}) > 0</if>
+		<if test="category == 2">AND INSTR(s.name, #{searchWord}) > 0</if>
+		<if test="category == 3">AND INSTR(d.dname, #{searchWord}) > 0</if>
+		ORDER BY
+		<choose>
+			<when test="orderBy == 1">s.id DESC</when>
+			<when test="orderBy == 2">s.studentId</when>
+			<otherwise>s.id</otherwise>
+		</choose>
+		LIMIT ${start}, ${size}
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT COUNT(s.id)
+		FROM student s left join department d on s.departmentId=d.id
+		WHERE s.id>0
+		<if test="category == 1">AND INSTR(s.studentId, #{searchWord}) > 0</if>
+		<if test="category == 2">AND INSTR(s.name, #{searchWord}) > 0</if>
+	</select>
+
+
+
+
+</mapper>

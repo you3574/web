@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.skhu.mapper.ExcelMapper">
+
+	<insert id="setMyCourses" parameterType="java.util.List">
+		insert into my_course ( 
+		year, semester, courseId, subjectName, category, credits,grade,userId ) values
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.year}, #{item.semester}, #{item.courseId}, 
+			#{item.subjectName}, #{item.category},
+			#{item.credits},#{item.grade},#{item.userId})
+		</foreach>
+	</insert>
+	
+	<select id="getMyCourses" resultType="net.skhu.VO.MyCourse">
+		SELECT
+		*
+		FROM
+		my_course m
+		WHERE
+		m.userId = #{userId}
+		
+		
+	</select>
+	
+	
+
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.skhu.mapper.StudentMapper">
+
+	<select id="getAllstudentId" resultType="String">
+		select studentId from student
+	</select>
+
+	<select id="getAllstudent" resultType="net.skhu.VO.Student">
+		select s.*, d.dname
+		from student s left join department d on s.departmentId=d.id;
+	</select>
+
+	<select id="getAStudent" resultType="net.skhu.VO.Student">
+		SELECT * FROM student WHERE
+		id = #{student.id}
+	</select>
+
+	<select id="findByStudentId" resultType="net.skhu.VO.Student">
+		SELECT * FROM student WHERE studentId = #{studentId}
+	</select>
+
+	<!-- <select id="findAll" resultType="Student"> -->
+	<!-- SELECT * FROM Student -->
+	<!-- </select> -->
+
+
+	<!-- <insert id="insert" useGeneratedKeys="true" keyProperty="id"> -->
+	<!-- INSERT Student (studentId, name, departmentId, grade) -->
+	<!-- VALUES (#{studentId}, #{name}, #{departmentId}, #{grade}) -->
+	<!-- </insert> -->
+
+	<!-- <update id="update"> -->
+	<!-- UPDATE Student SET -->
+	<!-- studentId = #{studentId}, -->
+	<!-- name = #{name}, -->
+	<!-- departmentId = #{departmentId}, -->
+	<!-- grade = #{grade} -->
+	<!-- WHERE id = #{id} -->
+	<!-- </update> -->
+
+	<!-- <delete id="delete"> -->
+	<!-- DELETE FROM Student WHERE id = #{id} -->
+	<!-- </delete> -->
+
+	<select id="getStudentRecord"
+		resultType="net.skhu.VO.MyCourseRecord">
+		SELECT * FROM my_course_record where studentId=#{studentId}
+		order by year, semester;
+	</select>
+
+	<select id="getStudentRecordPass"
+		resultType="net.skhu.VO.MyCourseRecord">
+		SELECT * FROM my_course_record where studentId=#{studentId} and grade not in
+		('NP','F')
+		order by year, semester;
+	</select>
+	<!-- <select id="getMajorCourseName" parameterType="net.skhu.VO.MyCourseRecord" 
+		resultType="String"> select majorName from soft_course where courseId=#{courseId} 
+		and year=#{year} and semester = #{semester} and division=1 </select> <select 
+		id="getCulturalCourseName" parameterType="net.skhu.VO.MyCourseRecord" resultType="String"> 
+		select cultureName from cultural_course where courseId=#{courseId} and year=#{year} 
+		and semester = #{semester} and division=1 </select> -->
+	<select id="getMajorCourseName"
+		parameterType="net.skhu.VO.MyCourseRecord" resultType="String">
+		select subjectName from all_course
+		where courseId=#{courseId} and year=#{year} and semester = #{semester} and
+		division=1
+		and category in ('전필','전선')
+	</select>
+
+	<select id="getCulturalCourseName"
+		parameterType="net.skhu.VO.MyCourseRecord" resultType="String">
+		select subjectName from all_course
+		where courseId=#{courseId} and year=#{year} and semester = #{semester} and
+		division=1
+		<!-- and category in ('교필','교선') -->
+	</select>
+
+	<select id="getMajorRequireCourseName" resultType="String">
+		select subjectName from all_course
+		where courseId=#{courseId} and year=#{year} and semester = #{semester} and
+		division=1 and departmentId = #{departmentId}
+		and category in ('전필')
+	</select>
+
+	<select id="getMajorCourseName2" resultType="String">
+		select subjectName from all_course
+		where courseId=#{courseId} and year=#{year} and semester = #{semester} and
+		division=1 and departmentId = #{departmentId}
+		and category in ('전필','전선') LIMIT 1;
+	</select>
+
+	<select id="getTableName" resultType="String">
+		select tableName from major_connect where majorCondition = #{condition} and
+		departmentId = #{departId} and year = #{year}
+	</select>
+
+	<select id="getCode" resultType="String">
+		select code from major_connect where majorCondition = #{condition} and
+		departmentId = #{departId} and year = #{year}
+	</select>
+
+	<select id="getMajorRequire"
+		resultType="net.skhu.VO.MajorRequire">
+		select * from ${tableName} where code = #{code} and name = #{course}
+	</select>
+
+	<select id="getMajorName" parameterType="java.util.HashMap"
+		resultType="String">
+		SELECT subjectName FROM all_course where courseId=#{courseId} and
+		year=#{year} LIMIT 1;
+	</select>
+
+	<select id="getMajorName2" parameterType="java.util.HashMap"
+		resultType="String">
+		SELECT subjectName FROM all_course where courseId=#{courseId} LIMIT 1;
+	</select>
+
+	<select id="getCulturalTableName" resultType="String">
+		select tableName from cultural_connect where majorCondition = #{condition}
+		and departmentId = #{departId} and year = #{year}
+	</select>
+
+	<select id="getCulturalCode" resultType="String">
+		select code from cultural_connect where majorCondition = #{condition} and
+		departmentId = #{departId} and year = #{year}
+	</select>
+
+	<select id="getCulturalRequire"
+		resultType="net.skhu.VO.CulturalRequire">
+		select * from ${tableName} where code = #{code}
+	</select>
+
+	<delete id="deleteStudentRecord">
+		delete from my_course_record where studentId = #{studentId}
+	</delete>
+
+	<select id="getRecordId" resultType="Integer">
+		select recordId from category_change where recordId = #{recordId} and status = 0
+	</select>
+	
+	<insert id="setCategotyChange" parameterType="net.skhu.VO.CategoryChange">
+		insert category_change (recordId, studentId, courseId, subjectName, category, changeCategory, semester, year)
+		values (#{recordId}, #{studentId}, #{courseId}, #{subjectName}, #{category}, #{changeCategory}, #{semester}, #{year})
+	</insert>
+	
+	<select id="getStatus0" resultType="net.skhu.VO.CategoryChange">
+		select * from category_change where studentId = #{studentId} and status = 0
+	</select>
+	
+	<select id="getStatus1" resultType="net.skhu.VO.CategoryChange">
+		select * from category_change where studentId = #{studentId} and status = 1
+	</select>
+	
+	<select id="getStatus2" resultType="net.skhu.VO.CategoryChange">
+		select * from category_change where studentId = #{studentId} and status = 2
+	</select>
+
+</mapper>

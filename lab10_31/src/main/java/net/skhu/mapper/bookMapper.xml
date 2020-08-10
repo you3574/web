@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.skhu.mapper.bookMapper">
+
+	<select id="findAllOrderBy" resultType="book">
+    SELECT * FROM book
+    ORDER BY ${order}
+    LIMIT #{count}
+  </select>
+
+  <select id="findOne" resultType="book">
+    SELECT * FROM book WHERE id = #{id}
+  </select>
+  
+  <select id="findBybookTitle" resultType="book"> 
+    SELECT * FROM book WHERE title = #{title}
+  </select>   
+
+  <select id="findAll" resultType="book">
+    SELECT b.*, c.categoryName
+    FROM book b LEFT JOIN category c ON b.categoryId = c.id
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"> //true = book 객체에 insert하면 자동 id부여, db테이블 참조할 때 유용. 무엇을 삽입한건지 알 수 있다. 
+    INSERT book (title, author, categoryId, price)
+    VALUES (#{title}, #{author}, #{categoryId}, #{price})
+  </insert>
+
+<update id="update">
+    UPDATE book
+    <set>
+      <if test="id != null">id = #{id},</if>
+      <if test="title != null">title = #{title},</if>
+      <if test="author != null">author = #{author},</if>
+      <if test="price != null">price = #{price},</if>
+      <if test="categoryId != 0">categoryId = #{categoryId}</if>
+    </set>
+    WHERE id = #{id}
+  </update>
+
+
+  <delete id="delete">
+    DELETE FROM book WHERE id = #{id}
+  </delete>
+
+</mapper>
+
